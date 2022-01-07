@@ -1,0 +1,12 @@
+__pycache__
+*.pyc
+*.bak
+venv*/*
+cover/*
+.coverage
+db.sqlite3
+dev_static/*
+node_modules/*
+debug.log
+backup/*
+.sass-cache/*

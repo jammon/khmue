@@ -1,0 +1,11 @@
+{% for employee in employees %}
+  {% ifchanged %}
+  <div class="font-bold">{{ employee.prof_group }} </div>
+  {% endifchanged %}
+  {% include "geraete/employee_line.html" %}
+{% empty %}
+<div>Noch keine Mitarbeiter eingegeben</div>
+{% endfor %}
+{% with form=employee_form form_save=True %}
+  {% include "geraete/employee_form.html" %}
+{% endwith %}

@@ -1,0 +1,16 @@
+{% extends "geraete/base.html" %}
+{% load widget_tweaks %}
+{% block content %}
+  
+<form action="/ersteinweisung" method="post" class="">
+  {% csrf_token %}
+  <div>{{ form.day.label }}<br>{{ form.day }}<br>{{ form.day.errors }}</div>
+  <div>{{ form.instructor.label }}<br>{{ form.instructor }}<br>{{ form.instructor.errors }}</div>
+  <div>{{ form.device_company.label }}<br>{{ form.device_company }}<br>{{ form.device_company.errors }}</div>
+  <div>{{ form.instructed.label }}<br>{{ form.instructed }}<br>{{ form.instructed.errors }}</div>
+  <div>{{ form.devices.label }}<br>{{ form.devices }}<br>{{ form.devices.errors }}</div>
+  
+  <button type="submit" class="p-2 text-white bg-blue-400 rounded">Speichern</button>
+</form>
+
+{% endblock content %}

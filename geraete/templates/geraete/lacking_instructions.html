@@ -1,0 +1,14 @@
+{% extends "geraete/base.html" %}
+{% block content %}
+{% for employee, devices in data %}
+  <div>{{ employee }}</div>
+  <div>
+    <ul>
+      {% for device in devices %}
+        <li>{{ device }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endfor %}  
+
+{% endblock content %}

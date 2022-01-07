@@ -1,0 +1,14 @@
+<div class="grid grid-cols-2 w-6/12">
+{% for device in devices %}
+  {% ifchanged  %}
+    <div class="col-span-2 font-bold">{{ device.category }}</div>
+  {% endifchanged %}
+  <div>{{ device.vendor }}</div>
+  <div>{{ device.name }}</div>
+{% empty %}
+  <div class="col-span-2">Noch keine Geräte eingegeben</div>
+{% endfor %}
+</div>
+{% with form=device_form form_save=True %}
+  {% include "geraete/device_form.html" %}
+{% endwith %}

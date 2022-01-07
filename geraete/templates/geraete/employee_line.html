@@ -1,0 +1,6 @@
+<div>
+  <a href="/mitarbeiter/{{ employee.id|default:"edit"}} ">
+    {{ employee }}
+  </a>
+  {% if employee.is_instructor %} (MPG-Beauftragter) {% endif %}
+</div>

@@ -1,0 +1,11 @@
+{% extends "geraete/base.html" %}
+{% include "geraete/navigation.html" %}
+
+{% block content %}
+<h2 class="mt-2 font-bold text-lg">Mitarbeiter</h2>
+<div id="employees">
+{% include "geraete/employees_list.html" %}
+</div>
+
+
+{% endblock content %}

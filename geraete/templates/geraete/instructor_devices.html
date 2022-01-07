@@ -1,0 +1,10 @@
+{% for device in devices %}
+<div>
+    <label for="id_devices_{{ device.id }}">
+    	<input type="checkbox" name="devices" value="{{ device.id }}" 
+    	id="id_devices_{{ device.id }}">
+    	{{ device }}
+ 	</label>
+
+</div>
+{% endfor %}

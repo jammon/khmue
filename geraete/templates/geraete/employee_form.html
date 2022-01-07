@@ -1,0 +1,11 @@
+{% load widget_tweaks %}
+<form action="" class="flex flex-wrap gap-1" 
+  hx-post="/mitarbeiter/add" hx-target="#employees" hx-swap="innerHTML">
+  {% csrf_token %}
+  {% for field in form %}
+  <div>{{ field.label_tag }} 
+    {% render_field field class+="p-px border-gray-300" %}
+  </div>
+  {% endfor %}
+  {% include "geraete/save-submit.html" %}
+</form>
