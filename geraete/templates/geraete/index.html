@@ -1,24 +1,25 @@
 {% extends "geraete/base.html" %}
 
 {% block content %}
-<h2 class="mt-2 font-bold text-lg">Mitarbeiter</h2>
+<h2>Mitarbeiter</h2>
 <div id="employees">
 {% include "geraete/employees_list.html" %}
 </div>
 
-<h2 class="mt-2 font-bold text-lg">Geräte</h2>
-<div class="grid grid-cols-2 w-6/12">
+<h2>Geräte</h2>
+<div>
 {% for device in devices %}
   {% ifchanged  %}
-    <div class="col-span-2 font-bold">{{ device.category }}</div>
+    <div class="">{{ device.category }}</div>
   {% endifchanged %}
   <div>{{ device.name }}</div>
   <div>{{ device.vendor }}</div>
 {% endfor %}
 </div>
 
-<h2 class="font-bold text-lg">Einweisungen</h2>
+<h2>Einweisungen</h2>
 {% for instruction in instructions %}
   <div>{{ instruction }} durch {{ instruction.instructor }} </div>
 {% endfor %}
+
 {% endblock content %}

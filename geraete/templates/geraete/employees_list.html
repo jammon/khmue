@@ -1,11 +1,18 @@
+<div class="pure-g">
+<div>
 {% for employee in employees %}
   {% ifchanged %}
-  <div class="font-bold">{{ employee.prof_group }} </div>
+  </div>
+  <div class="pure-u-1 pure-u-sm-1-3">
+  <h3>{{ employee.prof_group }} </h3>
   {% endifchanged %}
   {% include "geraete/employee_line.html" %}
 {% empty %}
-<div>Noch keine Mitarbeiter eingegeben</div>
+Noch keine Mitarbeiter eingegeben
 {% endfor %}
+</div>
+</div>
+<h3>Neue Mitarbeiterin</h3>
 {% with form=employee_form form_save=True %}
   {% include "geraete/employee_form.html" %}
 {% endwith %}

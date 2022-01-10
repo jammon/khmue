@@ -1,11 +1,12 @@
-{% load widget_tweaks %}
-<form action="" class="flex flex-wrap gap-1" 
+<form action="" class="pure-form pure-form-aligned" 
   hx-post="/geraete/add" hx-target="#devices" hx-swap="innerHTML">
   {% csrf_token %}
   {% for field in form %}
-  <div>{{ field.label_tag }} 
-    {% render_field field class+="p-px border-gray-300" %}
+  <div class="pure-control-group">{{ field.label_tag }} 
+    {{ field }}
   </div>
   {% endfor %}
-  {% include "geraete/save-submit.html" %}
+  <div class="pure-controls">
+    <button type="submit">Speichern</button>
+  </div>
 </form>

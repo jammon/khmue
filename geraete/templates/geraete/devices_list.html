@@ -1,14 +1,18 @@
-<div class="grid grid-cols-2 w-6/12">
-{% for device in devices %}
-  {% ifchanged  %}
-    <div class="col-span-2 font-bold">{{ device.category }}</div>
-  {% endifchanged %}
-  <div>{{ device.vendor }}</div>
-  <div>{{ device.name }}</div>
-{% empty %}
-  <div class="col-span-2">Noch keine Geräte eingegeben</div>
-{% endfor %}
+<div class="pure-g">
+  <div>
+  {% for device in devices %}
+    {% ifchanged  %}
+    </div>
+    <div class="pure-u-1 pure-u-sm-1-3">
+    <h3>{{ device.category }} </h3>
+    {% endifchanged %}
+    <div>{{ device.vendor }} - {{ device.name }}</div>
+  {% empty %}
+    <div class="col-span-2">Noch keine Geräte eingegeben</div>
+  {% endfor %}
+  </div>
 </div>
+<h3>Neues Gerät</h3>
 {% with form=device_form form_save=True %}
   {% include "geraete/device_form.html" %}
 {% endwith %}
