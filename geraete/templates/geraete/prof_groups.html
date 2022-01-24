@@ -1,12 +1,12 @@
 {% extends "geraete/base.html" %}
-{% include "geraete/navigation.html" %}
+{% include "geraete/partials/navigation.html" %}
 
 {% block content %}
-<h2 class="mt-2 font-bold text-lg">Berufsgruppen</h2>
+<h2>Berufsgruppen</h2>
 {% for group in groups %}
-	<div><a href="/gruppen/{{ group.id }}">{{ group }}</a> </div>
+	<div><a class="modelitem" href="/gruppen/{{ group.id }}">{{ group }}</a> </div>
 {% endfor %}
 <div>
-<a href="/gruppen/add" class="p-2 text-white bg-blue-400 rounded">Neu</a>
+<a href="/gruppen/add" class="pure-button pure-button-primary">Neu</a>
 </div>
 {% endblock content %}

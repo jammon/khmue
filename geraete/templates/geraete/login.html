@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block page %}
+<div class="pure-u">	
+  <h1>Geräteverwaltung der Intensivmedizin am Klinikum Hann. Münden</h1>
+  <form action="/accounts/login/" class="pure-form pure-form-aligned"
+   method="POST">
+    {% csrf_token %}
+    {% for field in form %}
+    <div class="pure-control-group">
+      {{ field.label_tag }} 
+      {{ field }}
+    </div>
+    {% endfor %}
+    <div class="pure-controls">Für das Funktionieren dieses Angebots sind Cookies erforderlich. Durch Ihre Anmeldung erklären Sie sich mit deren Verwendung einverstanden.</div>
+    <div class="pure-controls">
+      <button type="submit" class="pure-button pure-button-primary">
+        Anmelden
+      </button>
+    </div>
+  </form>
+</div>
+{% endblock page %}

@@ -1,3 +1,4 @@
+from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import (
     render,
     redirect,
@@ -7,6 +8,8 @@ from geraete import models, forms
 
 
 def index(request):
+    if not request.user.is_authenticated:
+        return login(request)
     devices = models.Device.objects.all().order_by(
         "category__category", "vendor", "name"
     )
@@ -29,6 +32,12 @@ def index(request):
             "employee_form": forms.EmployeeForm(),
             "instructions": instructions,
         },
+    )
+
+
+def login(request):
+    return render(
+        request, "geraete/login.html", {"form": AuthenticationForm()}
     )
 
 
@@ -60,7 +69,7 @@ def employee_add(request):
     )
     return render(
         request,
-        "geraete/employees_list.html",
+        "geraete/partials/employees_list.html",
         {
             "employee_form": form,
             "employees": employees,
@@ -108,7 +117,7 @@ def device_add(request):
     )
     return render(
         request,
-        "geraete/devices_list.html",
+        "geraete/partials/devices_list.html",
         {
             "device_form": form,
             "devices": devices,
@@ -188,7 +197,7 @@ def get_devices(request):
     )
     return render(
         request,
-        "geraete/instructor_devices.html",
+        "geraete/partials/instructor_devices.html",
         {"devices": devices},
     )
 

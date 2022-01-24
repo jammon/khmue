@@ -1,5 +1,5 @@
 <div>
-  <a href="/mitarbeiter/{{ employee.id|default:"edit"}} ">
+  <a href="/mitarbeiter/{{ employee.id|default:"edit"}}" class="modelitem">
     {{ employee }}
   </a>
   {% if employee.is_instructor %} (MPG-Beauftragter) {% endif %}

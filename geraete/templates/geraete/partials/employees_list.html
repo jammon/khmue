@@ -6,7 +6,7 @@
   <div class="pure-u-1 pure-u-sm-1-3">
   <h3>{{ employee.prof_group }} </h3>
   {% endifchanged %}
-  {% include "geraete/employee_line.html" %}
+  {% include "geraete/partials/employee_line.html" %}
 {% empty %}
 Noch keine Mitarbeiter eingegeben
 {% endfor %}
@@ -14,5 +14,5 @@ Noch keine Mitarbeiter eingegeben
 </div>
 <h3>Neue Mitarbeiterin</h3>
 {% with form=employee_form form_save=True %}
-  {% include "geraete/employee_form.html" %}
+  {% include "geraete/partials/employee_form.html" %}
 {% endwith %}

@@ -1,6 +1,19 @@
 {% extends "base.html" %}
-{% block title %} Geräteeinweisungen {% endblock title %}
-{% block description %} Geräteeinweisungen der Intensivmedizin KHMUE {% endblock description %}
-{% block navigation %}
-  {% include "geraete/navigation.html" %}
-{% endblock navigation %}
+{% block page %}
+  <nav class="pure-u-1 pure-u-sm-1-3 pure-u-md-1-4 pure-u-lg-1-6">
+  {% block navigation %}
+    {% include "geraete/partials/navigation.html" %}
+  {% endblock navigation %}
+  </nav>
+  <div role="main" id="main-content" class="pure-u-1 pure-u-sm-2-3 pure-u-md-3-4 pure-u-lg-5-6">
+    {% block content %} {% endblock content %}
+  </div>
+
+  {% block extracontent %}
+  {% endblock extracontent %}
+
+  <script src="https://unpkg.com/htmx.org@1.6.1" integrity="sha384-tvG/2mnCFmGQzYC1Oh3qxQ7CkQ9kMzYjWZSNtrRZygHPDDqottzEJsqS4oUVodhW" crossorigin="anonymous"></script>
+  {% block extrascripts %}
+  {% endblock extrascripts %}
+
+{% endblock page %}

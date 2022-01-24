@@ -23,38 +23,6 @@
 </head>
 
 <body class="pure-g">
-{% if user.is_authenticated %}
-  <nav class="pure-u-1 pure-u-sm-1-3 pure-u-md-1-4 pure-u-lg-1-6">
-  {% block navigation %}Navigation{% endblock navigation %}
-  </nav>
-  <div role="main" id="main-content" class="pure-u-1 pure-u-sm-2-3 pure-u-md-3-4 pure-u-lg-5-6">
-    {% block content %} {% endblock content %}
-  </div>
-
-  {% block extracontent %}
-  {% endblock extracontent %}
-
-  <script src="https://unpkg.com/htmx.org@1.6.1" integrity="sha384-tvG/2mnCFmGQzYC1Oh3qxQ7CkQ9kMzYjWZSNtrRZygHPDDqottzEJsqS4oUVodhW" crossorigin="anonymous"></script>
-  {% block extrascripts %}
-  {% endblock extrascripts %}
-
-{% else %}
-<h1>Geräteverwaltung der Intensivmedizin am Klinikum Hann. Münden</h1>
-<form action="/login" class="pure-form pure-form-aligned">
-  {% csrf_token %}
-  {% for field in form %}
-  <div class="pure-control-group">
-    {{ field.label_tag }} 
-    {{ field }}
-  </div>
-  {% endfor %}
-  <div class="pure-controls">Für das Funktionieren dieses Angebots sind Cookies erforderlich. Durch Ihre Anmeldung erklären Sie sich mit deren Verwendung einverstanden.</div>
-  <div class="pure-controls">
-    <button type="submit" class="pure-button pure-button-primary">
-      Anmelden
-    </button>
-  </div>
-</form>
-{% endif %}
+  {% block page %} {% endblock page %}
 </body>
 </html>

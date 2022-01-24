@@ -19,3 +19,17 @@ Hier sollen alle Geräteeinweisungen dokumentiert werden.
 - Neue Einweisung
 - Gerätepass für Mitarbeiter
 - Fehlende Einweisungen
+
+### Usecases
+- Mitarbeiter eingeben √
+- Mitarbeiter bearbeiten √
+- Gerätekategorie eingeben (Admin √)
+- Geräte eingeben √
+- Geräte bearbeiten (?)
+- Berufsgruppe mit einzuweisenden Geräten eingeben √
+- Berufsgruppe mit einzuweisenden Geräten bearbeiten √
+- Ersteinweisung dokumentieren
+- Folgeeinweisung dokumentieren √
+- Liste der Mitarbeiter mit fehlenden Einweisungen
+- Liste fehlender Einweisungen pro Mitarbeiter
+- Gerätepass zum Ausdrucken

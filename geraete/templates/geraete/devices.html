@@ -1,9 +1,9 @@
 {% extends "geraete/base.html" %}
-{% include "geraete/navigation.html" %}
+{% include "geraete/partials/navigation.html" %}
 
 {% block content %}
 <h2 class="mt-2 font-bold text-lg">Geräte</h2>
 <div id="devices">
-{% include "geraete/devices_list.html" %}
+{% include "geraete/partials/devices_list.html" %}
 </div>
 {% endblock content %}

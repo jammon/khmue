@@ -19,7 +19,8 @@ from django.urls import path, include
 from geraete import views as geraete_views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path("admin/", admin.site.urls),
+    path("accounts/", include("django.contrib.auth.urls")),
     path("", geraete_views.index),
     path("mitarbeiter", geraete_views.employees, name="employees"),
     path("mitarbeiter/edit", geraete_views.employee_edit),
@@ -27,11 +28,11 @@ urlpatterns = [
     path("mitarbeiter/add", geraete_views.employee_add),
     path("geraete", geraete_views.devices),
     path("geraete/add", geraete_views.device_add),
+    path("gruppen", geraete_views.prof_groups, name="prof_groups"),
     path("gruppen/add", geraete_views.prof_group),
     path("gruppen/<int:id>", geraete_views.prof_group),
     path("einweisung", geraete_views.instruction),
     path("ersteinweisung", geraete_views.primaryinstruction),
-    path("gruppen", geraete_views.prof_groups, name="prof_groups"),
     path("get_devices", geraete_views.get_devices, name="get_devices"),
     path("lacking", geraete_views.lacking_instructions, name="lacking"),
 ]
