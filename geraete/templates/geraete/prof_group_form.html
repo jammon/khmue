@@ -9,38 +9,25 @@
 <form action="/gruppen/{{ prof_group.id|default:"add" }}" method="post"
  class="pure-form">
   {% csrf_token %}
-  {% with prof_group_form as form %}
-  <div class="pure-control-group">
-    {{ form.name.label_tag }} {{ form.name }}
-  </div>
-  <h2>Einzuweisende Geräte</h2>
+  {{ prof_group_form.name }}
   <div class="pure-g">
-    
-  <div>
-  <div>
-  {% for value, label, device, checked in form.devices.field.choices %}
-    {% ifchanged device.category %}
+    <div>
+    {% for device, checked in devices %}
+      {% ifchanged device.category %}      
       </div>
-      </div>
-
-      <div class="pure-u-1-3 pure-u-md-1-3">
-      <div class="pure-controls ">
-      <h3>{{ device.category }}</h3>
-    {% endifchanged %}
-      <label for="id_devices_{{ device.id }}">
-        <input type="checkbox" id="id_devices_{{ device.id }}" name="devices"
-          {% if checked %}
-            checked="checked"
-          {% endif %}
-        >
-        {{ device.name }} von {{ device.vendor }}
-      </label>
-      <br>
-  {% endfor %}
+      <div class="pure-u-1 pure-u-sm-1-3">
+        <h2>{{ device.category }} </h2>
+      {% endifchanged %}
+        <div>
+        <label for="id_devices_{{ device.id }}" class="pure-checkbox">
+          <input type="checkbox" name="devices" value="{{ device.id }}" 
+                 id="id_devices_{{ device.id }}" 
+                 {% if checked %}checked=""{% endif %} >
+          {{ device.name }} von {{ device.vendor }} </label>
+        </div>
+    {% endfor %}
+    </div>
   </div>
-  </div>
-  </div>
-  {% endwith %}
   <button type="submit" class="p-2 text-white bg-blue-400 rounded">Speichern</button>
 </form>
 

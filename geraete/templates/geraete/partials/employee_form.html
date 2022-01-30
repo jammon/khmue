@@ -1,5 +1,5 @@
-<form action="" class="pure-form pure-form-aligned" 
-  hx-post="/mitarbeiter/add" hx-target="#employees" hx-swap="innerHTML">
+<form action="/mitarbeiter/{{ employee.id|default:"" }}" method="post" 
+ class="pure-form pure-form-aligned">
   {% csrf_token %}
   {% for field in form %}
   <div class="pure-control-group">

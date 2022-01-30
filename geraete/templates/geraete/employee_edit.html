@@ -4,9 +4,7 @@
   
 <form action="/mitarbeiter/{{ employee.id|default:"edit" }}" method="post" class="">
   {% csrf_token %}
-  {% with employee_form as form %}
   {{ form.as_p }}
-  {% endwith %}
   <button type="submit" class="p-2 text-white bg-blue-400 rounded">Speichern</button>
 </form>
 

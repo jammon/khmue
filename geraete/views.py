@@ -1,38 +1,12 @@
 from django.contrib.auth.forms import AuthenticationForm
-from django.shortcuts import (
-    render,
-    redirect,
-    get_object_or_404,
-)
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect, get_object_or_404
 from geraete import models, forms
 
 
+@login_required
 def index(request):
-    if not request.user.is_authenticated:
-        return login(request)
-    devices = models.Device.objects.all().order_by(
-        "category__category", "vendor", "name"
-    )
-    employees = (
-        models.Employee.objects.all()
-        .order_by("prof_group__name", "is_instructor")
-        .select_related("prof_group")
-    )
-    instructions = (
-        models.Instruction.objects.all()
-        .order_by("-day")
-        .select_related("instructor")
-    )
-    return render(
-        request,
-        "geraete/index.html",
-        {
-            "devices": devices,
-            "employees": employees,
-            "employee_form": forms.EmployeeForm(),
-            "instructions": instructions,
-        },
-    )
+    return render(request, "geraete/index.html", {})
 
 
 def login(request):
@@ -41,44 +15,30 @@ def login(request):
     )
 
 
+# Employees ===================================================================
+@login_required
 def employees(request):
-    employees = (
-        models.Employee.objects.all()
-        .order_by("prof_group__name", "is_instructor")
-        .select_related("prof_group")
-    )
-    return render(
-        request,
-        "geraete/employees.html",
-        {
-            "employees": employees,
-            "employee_form": forms.EmployeeForm(),
-        },
-    )
-
-
-def employee_add(request):
     form = forms.EmployeeForm(request.POST or None)
     if form.is_valid():
         form.save()
         form = forms.EmployeeForm()
     employees = (
         models.Employee.objects.all()
-        .order_by("prof_group__name", "is_instructor")
+        .order_by(
+            "prof_group__name", "-is_instructor", "last_name", "first_name"
+        )
         .select_related("prof_group")
     )
     return render(
         request,
-        "geraete/partials/employees_list.html",
-        {
-            "employee_form": form,
-            "employees": employees,
-        },
+        "geraete/employees.html",
+        {"employees": employees, "form": form},
     )
 
 
+@login_required
 def employee_edit(request, id):
-    emp = get_object_or_404(models.Employee, id=id) if id else None
+    emp = get_object_or_404(models.Employee, id=id)
     form = forms.EmployeeForm(request.POST or None, instance=emp)
     if form.is_valid():
         form.save()
@@ -86,13 +46,12 @@ def employee_edit(request, id):
     return render(
         request,
         "geraete/employee_edit.html",
-        {
-            "employee_form": form,
-            "employee": emp,
-        },
+        {"form": form, "employee": emp},
     )
 
 
+# Devices ===================================================================
+@login_required
 def devices(request):
     devices = models.Device.objects.select_related("category").order_by(
         "category__category", "vendor", "name"
@@ -107,6 +66,7 @@ def devices(request):
     )
 
 
+@login_required
 def device_add(request):
     form = forms.DeviceForm(request.POST or None)
     if form.is_valid():
@@ -125,6 +85,8 @@ def device_add(request):
     )
 
 
+# Professional Groups =========================================================
+@login_required
 def prof_groups(request):
     return render(
         request,
@@ -133,6 +95,7 @@ def prof_groups(request):
     )
 
 
+@login_required
 def prof_group(request, id=None):
     """Edit Professional Group
 
@@ -141,21 +104,31 @@ def prof_group(request, id=None):
     … by POST with id: update ProfGroup
     … by POST without id: save ProfGroup
     """
-    pg = get_object_or_404(models.ProfessionalGroup, id=id) if id else None
+    if id:
+        pg = get_object_or_404(models.ProfessionalGroup, id=id)
+        checked_devices = pg.devices.all()
+    else:
+        pg = None
     form = forms.ProfessionalGroupForm(request.POST or None, instance=pg)
     if form.is_valid():
         form.save()
         return redirect("prof_groups")
+    devices = []
+    for device in (
+        models.Device.objects.all()
+        .select_related("category")
+        .order_by("category__category", "vendor", "name")
+    ):
+        devices.append((device, id is not None and device in checked_devices))
     return render(
         request,
         "geraete/prof_group_form.html",
-        {
-            "prof_group_form": form,
-            "prof_group": pg,
-        },
+        {"prof_group_form": form, "prof_group": pg, "devices": devices},
     )
 
 
+# Instructions ================================================================
+@login_required
 def instruction(request):
     form = forms.InstructionForm(request.POST or None)
     if form.is_valid():
@@ -175,6 +148,7 @@ def instruction(request):
     )
 
 
+@login_required
 def primaryinstruction(request):
     form = forms.PrimaryInstructionForm(request.POST or None)
     if form.is_valid():
@@ -191,6 +165,7 @@ def primaryinstruction(request):
     )
 
 
+@login_required
 def get_devices(request):
     devices = models.Device.objects.filter(
         instructors__id=int(request.POST.get("instructor"))
@@ -202,6 +177,7 @@ def get_devices(request):
     )
 
 
+@login_required
 def lacking_instructions(request, employee_id=None, profgroup_id=None):
     """List all employees and their count of missing instructions
 

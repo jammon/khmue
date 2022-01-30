@@ -1,25 +1,11 @@
 {% extends "geraete/base.html" %}
 
 {% block content %}
-<h2>Mitarbeiter</h2>
-<div id="employees">
-{% include "geraete/partials/employees_list.html" %}
-</div>
-
-<h2>Geräte</h2>
-<div>
-{% for device in devices %}
-  {% ifchanged  %}
-    <div class="">{{ device.category }}</div>
-  {% endifchanged %}
-  <div>{{ device.name }}</div>
-  <div>{{ device.vendor }}</div>
-{% endfor %}
-</div>
-
-<h2>Einweisungen</h2>
-{% for instruction in instructions %}
-  <div>{{ instruction }} durch {{ instruction.instructor }} </div>
-{% endfor %}
+<h1>Geräteeinweisungen</h1>
+<div><a href="/mitarbeiter">Mitarbeiterliste</a> bearbeiten</div>
+<div><a href="/geraete">Geräteliste</a> bearbeiten</div>
+<div><a href="/gruppen">Berufsgruppen</a> bearbeiten</div>
+<div><a href="/einweisung">Einweisung</a> dokumentieren</div>
+<div><a href="/ersteinweisung">Ersteinweisung</a> dokumentieren</div>
 
 {% endblock content %}

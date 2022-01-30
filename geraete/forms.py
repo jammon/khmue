@@ -24,34 +24,7 @@ class DeviceForm(forms.ModelForm):
         ]
 
 
-class CustomModelChoiceIterator(ModelChoiceIterator):
-    def choice(self, obj):
-        # import pdb; pdb.set_trace()
-        return (
-            self.field.prepare_value(obj),
-            self.field.label_from_instance(obj),
-            obj,
-            self.field.widget.checked_attribute.get("checked", False),
-        )
-
-
-class CustomModelChoiceField(forms.ModelMultipleChoiceField):
-    def _get_choices(self):
-        if hasattr(self, "_choices"):
-            return self._choices
-        return CustomModelChoiceIterator(self)
-
-    choices = property(_get_choices, forms.MultipleChoiceField._set_choices)
-
-
 class ProfessionalGroupForm(forms.ModelForm):
-    devices = CustomModelChoiceField(
-        widget=forms.CheckboxSelectMultiple,
-        queryset=models.Device.objects.all()
-        .order_by("category")
-        .select_related("category"),
-    )
-
     class Meta:
         model = models.ProfessionalGroup
         fields = "__all__"
