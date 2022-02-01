@@ -15,12 +15,24 @@ class DeviceCat(models.Model):
         return self.category
 
 
+class DeviceSortedManager(models.Manager):
+    def get_queryset(self):
+        return (
+            super()
+            .get_queryset()
+            .select_related("category")
+            .order_by("category__category", "vendor", "name")
+        )
+
+
 class Device(models.Model):
     category = models.ForeignKey(
         DeviceCat, on_delete=models.CASCADE, verbose_name="Kategorie"
     )
     vendor = models.CharField("Hersteller", max_length=50)
     name = models.CharField("Name", max_length=50)
+    objects = models.Manager()
+    devices_sorted = DeviceSortedManager()
 
     class Meta:
         verbose_name = "Gerät"

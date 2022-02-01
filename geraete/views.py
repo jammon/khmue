@@ -53,14 +53,11 @@ def employee_edit(request, id):
 # Devices ===================================================================
 @login_required
 def devices(request):
-    devices = models.Device.objects.select_related("category").order_by(
-        "category__category", "vendor", "name"
-    )
     return render(
         request,
         "geraete/devices.html",
         {
-            "devices": devices,
+            "devices": models.Device.devices_sorted.all(),
             "device_form": forms.DeviceForm(),
         },
     )
@@ -72,15 +69,12 @@ def device_add(request):
     if form.is_valid():
         form.save()
         form = forms.DeviceForm()
-    devices = models.Device.objects.select_related("category").order_by(
-        "category__category", "vendor", "name"
-    )
     return render(
         request,
         "geraete/partials/devices_list.html",
         {
             "device_form": form,
-            "devices": devices,
+            "devices": models.Device.devices_sorted.all(),
         },
     )
 
@@ -114,11 +108,7 @@ def prof_group(request, id=None):
         form.save()
         return redirect("prof_groups")
     devices = []
-    for device in (
-        models.Device.objects.all()
-        .select_related("category")
-        .order_by("category__category", "vendor", "name")
-    ):
+    for device in models.Device.devices_sorted.all():
         devices.append((device, id is not None and device in checked_devices))
     return render(
         request,
