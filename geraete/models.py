@@ -1,10 +1,29 @@
+from django.contrib.auth.models import User
 from django.db import models
+from django.http import Http404
 from datetime import date
 
 # Create your models here.
 
 
+class Company(models.Model):
+    name = models.CharField("Name", max_length=50)
+
+    class Meta:
+        verbose_name = "Krankenhaus"
+        verbose_name_plural = "Krankenhäuser"
+
+    def __str__(self):
+        return self.name
+
+
 class DeviceCat(models.Model):
+    company = models.ForeignKey(
+        Company,
+        on_delete=models.CASCADE,
+        verbose_name="Krankenhaus",
+        related_name="device_cats",
+    )
     category = models.CharField("Kategorie", max_length=50)
 
     class Meta:
@@ -15,24 +34,18 @@ class DeviceCat(models.Model):
         return self.category
 
 
-class DeviceSortedManager(models.Manager):
-    def get_queryset(self):
-        return (
-            super()
-            .get_queryset()
-            .select_related("category")
-            .order_by("category__category", "vendor", "name")
-        )
-
-
 class Device(models.Model):
+    company = models.ForeignKey(
+        Company,
+        on_delete=models.CASCADE,
+        verbose_name="Krankenhaus",
+        related_name="devices",
+    )
     category = models.ForeignKey(
         DeviceCat, on_delete=models.CASCADE, verbose_name="Kategorie"
     )
     vendor = models.CharField("Hersteller", max_length=50)
     name = models.CharField("Name", max_length=50)
-    objects = models.Manager()
-    devices_sorted = DeviceSortedManager()
 
     class Meta:
         verbose_name = "Gerät"
@@ -41,12 +54,31 @@ class Device(models.Model):
     def __str__(self):
         return f"{self.category}: {self.name} von {self.vendor} "
 
+    @classmethod
+    def get_for_instructor(cls, instructor_id, company_id):
+        return Device.objects.filter(
+            instructors__id=instructor_id, company__id=company_id
+        )
+
+    @classmethod
+    def get_sorted(cls, request):
+        return (
+            company_s(request, cls)
+            .select_related("category")
+            .order_by("category__category", "vendor", "name")
+        )
+
 
 class ProfessionalGroup(models.Model):
+    company = models.ForeignKey(
+        Company,
+        on_delete=models.CASCADE,
+        verbose_name="Krankenhaus",
+        related_name="professional_groups",
+    )
     name = models.CharField("Name", max_length=50)
     devices = models.ManyToManyField(
-        Device,
-        verbose_name="Einzuweisende Geräte",
+        Device, verbose_name="Einzuweisende Geräte", blank=True
     )
 
     class Meta:
@@ -56,24 +88,36 @@ class ProfessionalGroup(models.Model):
     def __str__(self):
         return self.name
 
+    def save_from_post(self, request):
+        self.company_id = request.session.get("company_id")
+        self.save()
+        self.devices.clear()
+        self.devices.add(*request.POST.getlist("devices"))
+
 
 class Employee(models.Model):
+    company = models.ForeignKey(
+        Company,
+        on_delete=models.CASCADE,
+        verbose_name="Krankenhaus",
+        related_name="employees",
+    )
     title = models.CharField("Titel", max_length=20, null=True, blank=True)
     first_name = models.CharField("Vorname", max_length=50)
     last_name = models.CharField("Nachname", max_length=50)
-    prof_group = models.ForeignKey(
+    prof_group = models.ManyToManyField(
         ProfessionalGroup,
-        on_delete=models.CASCADE,
         verbose_name="Berufsgruppe",
-        null=True,
         blank=True,
     )
-    company = models.CharField("Firma", max_length=50, default="KHMUE")
     is_instructor = models.BooleanField(
         default=False, verbose_name="MPG-Beauftragter"
     )
     instructor_for = models.ManyToManyField(
-        Device, verbose_name="Einweiser für", related_name="instructors"
+        Device,
+        verbose_name="Einweiser für",
+        related_name="instructors",
+        blank=True,
     )
 
     class Meta:
@@ -83,8 +127,44 @@ class Employee(models.Model):
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 
+    def sort_key(self):
+        return f"{self.last_name} {self.first_name}"
+
+    def save_from_post(self, request):
+        self.company_id = request.session.get("company_id")
+        self.save()
+        self.prof_group.clear()
+        self.prof_group.add(*request.POST.getlist("prof_group"))
+
+    @classmethod
+    def get_sorted(cls, company_id):
+        """Return Employees for this company in a particular order
+
+        company_id can be an int or a request
+        """
+        employees = []
+        for emp in (
+            company_s(company_id, Employee)
+            .order_by("last_name", "first_name")
+            .prefetch_related("prof_group")
+        ):
+            pgs = emp.prof_group.all()
+            if pgs:
+                for pg in pgs:
+                    employees.append((pg.name, emp))
+            else:
+                employees.append((" Keine Gruppe", emp))
+
+        return sorted(employees, key=lambda t: (t[0], t[1].sort_key()))
+
 
 class Instruction(models.Model):
+    company = models.ForeignKey(
+        Company,
+        on_delete=models.CASCADE,
+        verbose_name="Krankenhaus",
+        related_name="instructions",
+    )
     day = models.DateField("Datum", default=date.today)
     instructor = models.ForeignKey(
         Employee,
@@ -110,6 +190,12 @@ class Instruction(models.Model):
 
 
 class PrimaryInstruction(models.Model):
+    company = models.ForeignKey(
+        Company,
+        on_delete=models.CASCADE,
+        verbose_name="Krankenhaus",
+        related_name="primary_instructions",
+    )
     day = models.DateField("Datum", default=date.today)
     instructor = models.CharField("Einweiser", max_length=50)
     device_company = models.CharField("Firma", max_length=50)
@@ -128,3 +214,42 @@ class PrimaryInstruction(models.Model):
 
     def __str__(self):
         return f"Ersteinweisung am {self.day.strftime('%d.%m.%y')} "
+
+    def save(self):
+        super().save()
+        # save instructor status
+        devices = self.devices.all()
+        for empl in self.instructed.filter(is_instructor=True):
+            empl.instructor_for.add(devices)
+
+
+class SiteUser(models.Model):
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE, related_name="site_user"
+    )
+    company = models.ForeignKey(
+        Company,
+        on_delete=models.CASCADE,
+        verbose_name="Krankenhaus",
+        related_name="site_users",
+    )
+
+
+def company_s(request_or_company_id, model, *args, **kwargs):
+    """Return a queryset filtered to the request's company"""
+    company_id = (
+        request_or_company_id
+        if isinstance(request_or_company_id, int)
+        else request_or_company_id.session.get("company_id")
+    )
+    if company_id is None:
+        print(f"{company_id=} wurde nicht gefunden")
+        raise Http404
+    return model.objects.filter(company=company_id, *args, **kwargs)
+
+
+def save_c(form, company_id):
+    model = form.save(commit=False)
+    model.company_id = company_id
+    model.save()
+    return model

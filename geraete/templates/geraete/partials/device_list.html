@@ -1,0 +1,30 @@
+  <div class="pure-g">
+    <div>
+    {% for device, checked in devices %}
+      {% ifchanged device.category %}      
+      </div>
+      <div class="pure-u-1 pure-u-md-1-2 pure-u-lg-1-3 pure-u-xl-1-4">
+        <h2>
+          <input type="checkbox" onchange="toggle_inputs(this)">
+          {{ device.category }} 
+        </h2>
+      {% endifchanged %}
+        <div>
+        <label for="id_devices_{{ device.id }}" class="pure-checkbox">
+          <input type="checkbox" name="devices" value="{{ device.id }}" 
+                 id="id_devices_{{ device.id }}" class="togglable"
+                 {% if checked %}checked=""{% endif %} >
+          {{ device.name }} von {{ device.vendor }} </label>
+        </div>
+    {% endfor %}
+    </div>
+  </div>
+  <script>
+  function toggle_inputs(element) {
+    element.parentNode.parentNode
+        .querySelectorAll(".togglable")
+        .forEach(function(el) {
+          el.checked = !el.checked;
+    });
+  }
+  </script>

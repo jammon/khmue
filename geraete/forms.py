@@ -1,5 +1,4 @@
 from django import forms
-from django.forms.models import ModelChoiceIterator
 from geraete import models
 
 
@@ -7,11 +6,15 @@ class EmployeeForm(forms.ModelForm):
     class Meta:
         model = models.Employee
         fields = [
+            "title",
             "first_name",
             "last_name",
             "prof_group",
             "is_instructor",
         ]
+        widgets = {
+            "prof_group": forms.CheckboxSelectMultiple,
+        }
 
 
 class DeviceForm(forms.ModelForm):
@@ -27,7 +30,7 @@ class DeviceForm(forms.ModelForm):
 class ProfessionalGroupForm(forms.ModelForm):
     class Meta:
         model = models.ProfessionalGroup
-        fields = "__all__"
+        fields = ["name", "devices"]
 
 
 class InstructionForm(forms.ModelForm):
@@ -49,6 +52,10 @@ class PrimaryInstructionForm(forms.ModelForm):
     class Meta:
         model = models.PrimaryInstruction
         fields = "__all__"
+        widgets = {
+            "instructed": forms.CheckboxSelectMultiple,
+            "devices": forms.CheckboxSelectMultiple,
+        }
 
 
 class InstructorDevicesForm(forms.ModelForm):
