@@ -2,10 +2,16 @@
  class="pure-form pure-form-aligned">
   {% csrf_token %}
   {% for field in form %}
-  <div class="pure-control-group">
-    {{ field.label_tag }} 
-    {{ field }}
-  </div>
+    {% if field.name == "prof_group" %}
+      <div class="pure-controls">
+        {{ field }}
+      </div>
+    {% else %}
+    <div class="pure-control-group">
+      {{ field.label_tag }} 
+      {{ field }}
+    </div>
+    {% endif %}
   {% endfor %}
   <div class="pure-controls">
     <button type="submit">Speichern</button>

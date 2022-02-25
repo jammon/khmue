@@ -9,26 +9,8 @@
 <form action="/gruppen/{{ prof_group.id|default:"add" }}" method="post"
  class="pure-form">
   {% csrf_token %}
-  {{ prof_group_form.name }}
-  <div class="pure-g">
-    <div>
-    {% for device, checked in devices %}
-      {% ifchanged device.category %}      
-      </div>
-      <div class="pure-u-1 pure-u-sm-1-3">
-        <h2>{{ device.category }} </h2>
-      {% endifchanged %}
-        <div>
-        <label for="id_devices_{{ device.id }}" class="pure-checkbox">
-          <input type="checkbox" name="devices" value="{{ device.id }}" 
-                 id="id_devices_{{ device.id }}" 
-                 {% if checked %}checked=""{% endif %} >
-          {{ device.name }} von {{ device.vendor }} </label>
-        </div>
-    {% endfor %}
-    </div>
-  </div>
-  <button type="submit" class="p-2 text-white bg-blue-400 rounded">Speichern</button>
+  {{ form.name }}
+  {% include "geraete/partials/device_list.html" %}
+  <button type="submit">Speichern</button>
 </form>
-
 {% endblock content %}
