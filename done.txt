@@ -1,2 +1,3 @@
 x 2022-02-01 Form für Berufgruppen fixen
 x 2022-02-01 login_required verwenden
+x 2022-03-07 Personen könne mehreren Berufsgruppen angehören

@@ -1,44 +1,156 @@
 {% extends "geraete/base.html" %}
 {% block content %}
+{% if pi %}
+<h1>Ersteinweisung bearbeiten</h1>
+{% else %}
 <h1>Neue Ersteinweisung</h1>
-<form action="/ersteinweisung" method="post" class="pure-form pure-form-aligned">
+{% endif %}
+<form action="" method="post">
   {% csrf_token %}
+<div class="pure-form pure-form-aligned">
   <div class="pure-control-group">{{ form.day.label_tag }}{{ form.day }}<br>
     {{ form.day.errors }}</div>
   <div class="pure-control-group">{{ form.instructor.label_tag }}{{ form.instructor }}<br>
     {{ form.instructor.errors }}</div>
   <div class="pure-control-group">{{ form.device_company.label_tag }}{{ form.device_company }}<br>
     {{ form.device_company.errors }}</div>
-  <div class="pure-controls">{{ form.instructed.label_tag }}
-    {{ form.instructed.errors }}
-    {% for employee, prof_groups, checked in employees %}
-      <div class="{{ prof_groups }}">
-      <label for="id_instructed_{{ employee.id }}">
-        <input type="checkbox" name="instructed" value="1" 
-         id="id_instructed_{{ employee.id }}"
-         {% if checked %}checked="checked"{% endif %}>
-        {{ employee }}
-      </label>
-      </div>
-    {% endfor %}
+</div>
+<div class="pure-g">
+  <div class="pure-u-1">
+    <h3>{{ form.instructed.label_tag }}</h3>
   </div>
-  <div class="pure-controls">{{ form.devices.label_tag }}
-    {{ form.devices.errors }}
-    {% for device, vendor_slug, checked in devices %}
-      <div>
-      <label for="id_devices_{{ device.id }}" class="{{ vendor_slug }}">
-        <input type="checkbox" name="devices" value="1" 
-         id="id_devices_{{ device.id }}"
-         {% if checked %}checked="checked"{% endif %}>
-        {{ device }}
-      </label>
-      </div>
+    <div class="pure-u-1 pure-u-sm-1-2 pure-u-md-1-3">
+    {% for pg in profgroups %}
+      <div><label>
+        <input type="checkbox" class="toggle-pg" data-pgid="{{ pg.id }}">
+        {{ pg.name }}</label></div>
     {% endfor %}
+    </div>
+    <div class="pure-controls pure-u-1 pure-u-sm-1-2 pure-u-md-2-3">
+      {{ form.instructed.errors }}
+      {% for employee, prof_groups, checked in instructed %}
+        <div class="employee {{ prof_groups }}">
+        <label for="id_instructed_{{ employee.id }}">
+          <input type="checkbox" name="instructed" value="{{ employee.id }}" 
+           id="id_instructed_{{ employee.id }}"
+           {% if checked %}checked="checked"{% endif %}>
+          {{ employee }}
+        </label>
+        </div>
+      {% endfor %}
+    </div>
+  <div class="pure-u-1">
+    <h3>{{ form.devices.label_tag }}</h3>
   </div>
-  <div class="pure-controls">{{ form.devices.label_tag }}{{ form.devices }}<br>
-    {{ form.devices.errors }}</div>
-  
+    <div class="pure-u-1 pure-u-sm-1-2 pure-u-md-1-3">
+    {% for slug, vendor in vendors %}
+      <div><label>
+        <input type="checkbox" class="toggle_vendor" data-slug="{{ slug }}">
+        {{ vendor }} </label></div>
+    {% endfor %}
+    </div>
+    <div class="pure-controls pure-u-1 pure-u-sm-1-2 pure-u-md-2-3">
+      {{ form.devices.errors }}
+      {% for device, vendor_slug, checked in devices %}
+        <div class="device vendor-{{ vendor_slug }}">
+        <label for="id_devices_{{ device.id }}">
+          <input type="checkbox" name="devices" value="{{ device.id }}" 
+           id="id_devices_{{ device.id }}"
+           {% if checked %}checked="checked"{% endif %}>
+          {{ device }}
+        </label>
+        </div>
+      {% endfor %}
+    </div>
+</div>
   <button type="submit" class="">Speichern</button>
 </form>
 
 {% endblock content %}
+{% block extrascripts %}
+  <script>
+  document.querySelectorAll("input[data-pgid]").forEach(function(el) {
+    el.onchange = toggle_pg;
+  });
+  document.querySelectorAll("input[data-slug]").forEach(function(el) {
+    el.onchange = toggle_vendor;
+  });
+
+  function toggle_pg(e) {
+    let el = e.target;
+    let employees = document.querySelectorAll(".employee");
+    let pg_employees = document.querySelectorAll(".employee.pg_"+el.dataset.pgid);
+    let checked_pgs = document.querySelectorAll("input[data-pgid]:checked");
+    // if this toggles on
+    if (el.checked) {
+    //   if there are no other pgs on
+      if (checked_pgs.length == 1) {
+    //     hide all employees
+        employees.forEach(function(el) {
+          el.classList.add("hidden");
+        });
+      }
+    //   show employees from this pg
+      pg_employees.forEach(function(el) {
+        el.classList.remove("hidden");
+        if (!el.selectioncounter) {
+          el.selectioncounter = 1;
+        } else {
+          el.selectioncounter += 1;
+        }
+      });
+    } else {
+    // else
+    //   hide this pg
+      pg_employees.forEach(function(el) {
+        el.selectioncounter -= 1;
+        if (el.selectioncounter === 0) {
+          el.classList.add("hidden");
+        }
+      });
+    }
+    // if this was the last pg checked
+    if (checked_pgs.length === 0) {
+    //   show all employees
+      employees.forEach(function(el) {
+        el.classList.remove("hidden");
+      });
+    }
+  }
+
+  function toggle_vendor(e) {
+    let el = e.target;
+    let slug = el.dataset.slug;
+    let devices = document.querySelectorAll(".device");
+    let vendor_devices = document.querySelectorAll(".device.vendor-"+slug);
+    let checked_vendors = document.querySelectorAll("input[data-slug]:checked");
+    // if this toggles on
+    if (el.checked) {
+    //   if there are no other vendors on
+      if (checked_vendors.length == 1) {
+    //     hide all devices
+        devices.forEach(function(el) {
+          el.classList.add("hidden");
+        });
+      }
+    //   show devices from this vendor
+      vendor_devices.forEach(function(el) {
+        el.classList.remove("hidden");
+      });
+    } else {
+    // else
+    //   hide this vendor
+      vendor_devices.forEach(function(el) {
+        el.classList.add("hidden");
+      });
+    }
+    // if this was the last vendor checked
+    if (checked_vendors.length === 0) {
+    //   show all devices
+      devices.forEach(function(el) {
+        el.classList.remove("hidden");
+      });
+    }
+  }
+  </script>
+{% endblock extrascripts %}

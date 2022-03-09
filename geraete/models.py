@@ -78,7 +78,10 @@ class ProfessionalGroup(models.Model):
     )
     name = models.CharField("Name", max_length=50)
     devices = models.ManyToManyField(
-        Device, verbose_name="Einzuweisende Geräte", blank=True
+        Device,
+        verbose_name="Einzuweisende Geräte",
+        blank=True,
+        related_name="professional_groups",
     )
 
     class Meta:
@@ -88,11 +91,11 @@ class ProfessionalGroup(models.Model):
     def __str__(self):
         return self.name
 
-    def save_from_post(self, request):
-        self.company_id = request.session.get("company_id")
+    def save_from_post(self, company_id, devices):
+        self.company_id = company_id
         self.save()
         self.devices.clear()
-        self.devices.add(*request.POST.getlist("devices"))
+        self.devices.add(*devices)
 
 
 class Employee(models.Model):
@@ -109,6 +112,7 @@ class Employee(models.Model):
         ProfessionalGroup,
         verbose_name="Berufsgruppe",
         blank=True,
+        related_name="employees",
     )
     is_instructor = models.BooleanField(
         default=False, verbose_name="MPG-Beauftragter"
@@ -123,6 +127,7 @@ class Employee(models.Model):
     class Meta:
         verbose_name = "Mitarbeiter"
         verbose_name_plural = "Mitarbeiter"
+        ordering = ["last_name", "first_name"]
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
@@ -130,11 +135,14 @@ class Employee(models.Model):
     def sort_key(self):
         return f"{self.last_name} {self.first_name}"
 
-    def save_from_post(self, request):
-        self.company_id = request.session.get("company_id")
+    def save_from_post(self, company_id, prof_groups):
+        self.company_id = company_id
         self.save()
         self.prof_group.clear()
-        self.prof_group.add(*request.POST.getlist("prof_group"))
+        self.prof_group.add(*prof_groups)
+
+    def lacking_instructions(self):
+        devices = Device.objects.filter(professional_groups__employees=self)
 
     @classmethod
     def get_sorted(cls, company_id):
@@ -156,6 +164,9 @@ class Employee(models.Model):
                 employees.append((" Keine Gruppe", emp))
 
         return sorted(employees, key=lambda t: (t[0], t[1].sort_key()))
+
+    def classes(self):
+        return " ".join([f"pg_{pg.id}" for pg in self.prof_group.all()])
 
 
 class Instruction(models.Model):
@@ -215,12 +226,10 @@ class PrimaryInstruction(models.Model):
     def __str__(self):
         return f"Ersteinweisung am {self.day.strftime('%d.%m.%y')} "
 
-    def save(self):
-        super().save()
-        # save instructor status
+    def save_instructor_status(self):
         devices = self.devices.all()
         for empl in self.instructed.filter(is_instructor=True):
-            empl.instructor_for.add(devices)
+            empl.instructor_for.add(*devices)
 
 
 class SiteUser(models.Model):
@@ -251,5 +260,7 @@ def company_s(request_or_company_id, model, *args, **kwargs):
 def save_c(form, company_id):
     model = form.save(commit=False)
     model.company_id = company_id
+    if form.instance is None:
+        model.id = form.instance.id
     model.save()
     return model

@@ -1,0 +1,152 @@
+[
+{
+  "model": "geraete.company", "pk": 1,
+  "fields": {
+    "name": "Test-Krankenhaus"
+  }
+},
+{
+  "model": "geraete.company", "pk": 2,
+  "fields": {
+    "name": "Anderes Krankenhaus"
+  }
+},
+{
+  "model": "geraete.devicecat", "pk": 1,
+  "fields": {
+    "company": 1,
+    "category": "Beatmung"
+  }
+},
+{
+  "model": "geraete.devicecat", "pk": 2,
+  "fields": {
+    "company": 1,
+    "category": "Monitoring"
+  }
+},
+{
+  "model": "geraete.devicecat", "pk": 3,
+  "fields": {
+    "company": 2,
+    "category": "Andere Kategorie"
+  }
+},
+{
+  "model": "geraete.device", "pk": 1,
+  "fields": {
+    "company": 1,
+    "category": 1,
+    "vendor": "Dräger Medical Deutschl.",
+    "name": "EVITA 2"
+  }
+},
+{
+  "model": "geraete.device", "pk": 2,
+  "fields": {
+    "company": 1,
+    "category": 1,
+    "vendor": "Dräger Medical Deutschl.",
+    "name": "MP01204 (Flowmeter)"
+  }
+},
+{
+  "model": "geraete.device", "pk": 3,
+  "fields": {
+    "company": 1,
+    "category": 2,
+    "vendor": "Philips Medizin Systeme",
+    "name": "M3150B (Rechner, Zentrale)"
+  }
+},
+{
+  "model": "geraete.device", "pk": 4,
+  "fields": {
+    "company": 1,
+    "category": 2,
+    "vendor": "Philips Medizin Systeme",
+    "name": "M1012A (Modul HZV)"
+  }
+},
+{
+  "model": "geraete.device", "pk": 5,
+  "fields": {
+    "company": 2,
+    "category": 3,
+    "vendor": "Andere Firma",
+    "name": "Anderes Gerät"
+  }
+},
+{
+  "model": "geraete.professionalgroup", "pk": 1,
+  "fields": {
+    "company": 1,
+    "name": "Gruppe 1",
+    "devices": [1]
+  }
+},
+{
+  "model": "geraete.professionalgroup", "pk": 2,
+  "fields": {
+    "company": 1,
+    "name": "Gruppe 2",
+    "devices": [1, 2]
+  }
+},
+{
+  "model": "geraete.professionalgroup", "pk": 3,
+  "fields": {
+    "company": 2,
+    "name": "Andere Gruppe",
+    "devices": [5]
+  }
+},
+{
+  "model": "geraete.employee", "pk": 1,
+  "fields": {
+    "company": 1,
+    "title": null,
+    "first_name": "FN1",
+    "last_name": "LN1",
+    "is_instructor": true,
+    "prof_group": [1],
+    "instructor_for": [1]
+  }
+},
+{
+  "model": "geraete.employee", "pk": 2,
+  "fields": {
+    "company": 1,
+    "title": "Dr.",
+    "first_name": "FN2",
+    "last_name": "LN2",
+    "is_instructor": true,
+    "prof_group": [1, 2],
+    "instructor_for": []
+  }
+},
+{
+  "model": "geraete.employee", "pk": 3,
+  "fields": {
+    "company": 1,
+    "title": "Dr. med.",
+    "first_name": "FN3",
+    "last_name": "LN3",
+    "is_instructor": false,
+    "prof_group": [1],
+    "instructor_for": []
+  }
+},
+{
+  "model": "geraete.employee", "pk": 4,
+  "fields": {
+    "company": 2,
+    "title": null,
+    "first_name": "FN4",
+    "last_name": "LN4",
+    "is_instructor": true,
+    "prof_group": [3],
+    "instructor_for": [3]
+  }
+}
+]

@@ -3,12 +3,12 @@
 <form action="/einweisung" method="post" class="pure-form pure-form-aligned">
   {% csrf_token %}
   <div class="pure-control-group">{{ form.day.label_tag }} {{ form.day }}<br>{{ form.day.errors }}</div>
-  <div class="pure-control-group">
+  <div class="pure-controls">
     {{ form.instructor.label_tag }} {{ form.instructor }} <br>
     {{ form.instructor.errors }}
   </div>
-  <div class="pure-control-group">{{ form.instructed.label_tag }} {{ form.instructed }}<br>{{ form.instructed.errors }}</div>
-  <div class="pure-control-group">{{ form.devices.label_tag }}</div>
+  <div class="pure-controls">{{ form.instructed.label_tag }} {{ form.instructed }}<br>{{ form.instructed.errors }}</div>
+  <div class="pure-controls">{{ form.devices.label_tag }}</div>
   <div id="devices" class="pure-controls">{% include "geraete/partials/instructor_devices.html" %}</div>
   <div>{{ form.devices.errors }}</div>
   <div class="pure-controls">

@@ -13,6 +13,17 @@
     </div>
     {% endif %}
   {% endfor %}
+  {% if employee.is_instructor %}
+  <div class="pure-u-1">
+    <h3>Kann einweisen in:</h3>
+    {% for device in devices %}
+    <div>{{ device }} </div>
+    {% empty %}
+    <div>Keine Geräte.</div>
+    {% endfor %}
+  </div>
+    
+  {% endif %}
   <div class="pure-controls">
     <button type="submit">Speichern</button>
   </div>

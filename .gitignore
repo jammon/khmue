@@ -3,6 +3,7 @@ __pycache__
 *.bak
 venv*/*
 stash/*
+data/*
 .coverage
 db.sqlite3
 dev_static/*

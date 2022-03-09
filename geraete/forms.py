@@ -36,7 +36,7 @@ class ProfessionalGroupForm(forms.ModelForm):
 class InstructionForm(forms.ModelForm):
     class Meta:
         model = models.Instruction
-        fields = "__all__"
+        exclude = ["company"]
         widgets = {
             "instructor": forms.RadioSelect(
                 attrs={
@@ -44,14 +44,16 @@ class InstructionForm(forms.ModelForm):
                     "hx-target": "#devices",
                     "hx-swap": "innerHTML",
                 }
-            )
+            ),
+            "instructed": forms.CheckboxSelectMultiple,
+            "devices": forms.CheckboxSelectMultiple,
         }
 
 
 class PrimaryInstructionForm(forms.ModelForm):
     class Meta:
         model = models.PrimaryInstruction
-        fields = "__all__"
+        exclude = ["company"]
         widgets = {
             "instructed": forms.CheckboxSelectMultiple,
             "devices": forms.CheckboxSelectMultiple,

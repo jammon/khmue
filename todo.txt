@@ -2,4 +2,3 @@
 (B) Report für Einweisungen pro Person
 (B) Report für Einweisungen pro Gerät
 (B) Report für Gerätepass
-(A) Personen könne mehreren Berufsgruppen angehören

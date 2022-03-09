@@ -28,8 +28,9 @@ Hier sollen alle Geräteeinweisungen dokumentiert werden.
 - Geräte bearbeiten (?)
 - Berufsgruppe mit einzuweisenden Geräten eingeben √
 - Berufsgruppe mit einzuweisenden Geräten bearbeiten √
-- Ersteinweisung dokumentieren
+- Ersteinweisung dokumentieren 
 - Folgeeinweisung dokumentieren √
+- Abfragen, in welche Geräte eine Person einweisen kann
 - Liste der Mitarbeiter mit fehlenden Einweisungen
 - Liste fehlender Einweisungen pro Mitarbeiter
 - Gerätepass zum Ausdrucken

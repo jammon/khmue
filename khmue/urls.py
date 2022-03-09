@@ -16,23 +16,27 @@ Including another URLconf
 from django.conf import settings
 from django.contrib import admin
 from django.urls import path, include
-from geraete import views as geraete_views
+from geraete import views as g_views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("accounts/", include("django.contrib.auth.urls")),
-    path("", geraete_views.index),
-    path("mitarbeiter/", geraete_views.employees, name="employees"),
-    path("mitarbeiter/<int:id>", geraete_views.employee_edit),
-    path("geraete", geraete_views.devices),
-    path("geraete/add", geraete_views.device_add),
-    path("gruppen", geraete_views.prof_groups, name="prof_groups"),
-    path("gruppen/add", geraete_views.prof_group),
-    path("gruppen/<int:id>", geraete_views.prof_group),
-    path("einweisung", geraete_views.instruction),
-    path("ersteinweisung", geraete_views.primaryinstruction),
-    path("get_devices", geraete_views.get_devices, name="get_devices"),
-    path("lacking", geraete_views.lacking_instructions, name="lacking"),
+    path("", g_views.index),
+    path("mitarbeiter/", g_views.employees, name="employees"),
+    path("mitarbeiter/<int:id>", g_views.employee_edit),
+    path("geraete", g_views.devices),
+    path("geraete/add", g_views.device_add),
+    path("gruppen", g_views.prof_groups, name="prof_groups"),
+    path("gruppen/add", g_views.prof_group, name="prof_group_add"),
+    path("gruppen/<int:id>", g_views.prof_group, name="prof_groups_edit"),
+    path("einweisung", g_views.instruction),
+    path("ersteinweisungen", g_views.primaryinstructions),
+    path("ersteinweisung/<int:id>", g_views.primaryinstruction),
+    path(
+        "ersteinweisung", g_views.primaryinstruction, name="primaryinstruction"
+    ),
+    path("get_devices", g_views.get_devices, name="get_devices"),
+    path("lacking", g_views.lacking_instructions, name="lacking"),
 ]
 
 if settings.DEBUG:

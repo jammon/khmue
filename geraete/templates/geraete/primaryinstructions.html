@@ -1,0 +1,12 @@
+{% extends "geraete/base.html" %}
+{% block content %}
+<h1>Ersteinweisungen</h1>
+{% for pi in pi_s %}
+  <div>
+    <a href="/ersteinweisung/{{ pi.id }}">
+      {{ pi.day|date:"j.n.o" }} - {{ pi.device_company }} 
+    </a>
+  </div>
+{% endfor %}
+
+{% endblock content %}
