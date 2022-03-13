@@ -21,6 +21,11 @@ STATICFILES_STORAGE = (
     "django.contrib.staticfiles.storage.ManifestStaticFilesStorage"
 )
 
+
+def random_string(length=50):
+    return "".join([choice(string.printable) for i in range(50)])
+
+
 config = configparser.ConfigParser()
 config.read(CONFIG_FILE)
 try:
