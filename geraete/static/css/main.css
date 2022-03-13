@@ -23,3 +23,9 @@
     user-select: none;
     box-sizing: border-box;
 }
+.employee div {
+    display: none;
+}
+.employee.show div {
+    display: block;
+}
