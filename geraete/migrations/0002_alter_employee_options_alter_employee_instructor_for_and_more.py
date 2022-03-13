@@ -6,27 +6,46 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('geraete', '0001_initial'),
+        ("geraete", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='employee',
-            options={'ordering': ['last_name', 'first_name'], 'verbose_name': 'Mitarbeiter', 'verbose_name_plural': 'Mitarbeiter'},
+            name="employee",
+            options={
+                "ordering": ["last_name", "first_name"],
+                "verbose_name": "Mitarbeiter",
+                "verbose_name_plural": "Mitarbeiter",
+            },
         ),
         migrations.AlterField(
-            model_name='employee',
-            name='instructor_for',
-            field=models.ManyToManyField(blank=True, related_name='instructors', to='geraete.Device', verbose_name='Einweiser für'),
+            model_name="employee",
+            name="instructor_for",
+            field=models.ManyToManyField(
+                blank=True,
+                related_name="instructors",
+                to="geraete.Device",
+                verbose_name="Einweiser für",
+            ),
         ),
         migrations.AlterField(
-            model_name='employee',
-            name='prof_group',
-            field=models.ManyToManyField(blank=True, related_name='employees', to='geraete.ProfessionalGroup', verbose_name='Berufsgruppe'),
+            model_name="employee",
+            name="prof_group",
+            field=models.ManyToManyField(
+                blank=True,
+                related_name="employees",
+                to="geraete.ProfessionalGroup",
+                verbose_name="Berufsgruppe",
+            ),
         ),
         migrations.AlterField(
-            model_name='professionalgroup',
-            name='devices',
-            field=models.ManyToManyField(blank=True, related_name='professional_groups', to='geraete.Device', verbose_name='Einzuweisende Geräte'),
+            model_name="professionalgroup",
+            name="devices",
+            field=models.ManyToManyField(
+                blank=True,
+                related_name="professional_groups",
+                to="geraete.Device",
+                verbose_name="Einzuweisende Geräte",
+            ),
         ),
     ]

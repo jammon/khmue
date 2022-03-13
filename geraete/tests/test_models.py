@@ -1,10 +1,11 @@
-from django.test import TestCase, Client
 import pytest
+from django.test import Client, TestCase
+
 from geraete.forms import EmployeeForm
 from geraete.models import (
     Company,
-    DeviceCat,
     Device,
+    DeviceCat,
     Employee,
     PrimaryInstruction,
     company_s,

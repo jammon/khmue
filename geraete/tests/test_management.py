@@ -1,6 +1,8 @@
 from io import StringIO
+
 from django.core.management import call_command
 from django.test import TestCase
+
 from geraete.models import Company, Device, DeviceCat, company_s
 
 FILENAME = "geraete/tests/MedGer.csv"

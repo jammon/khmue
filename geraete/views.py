@@ -1,15 +1,16 @@
-from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.forms import AuthenticationForm
+from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.text import slugify
 from django.views.decorators.http import require_POST
+
 from geraete import forms
 from geraete.models import (
-    Employee,
     Device,
-    ProfessionalGroup,
+    Employee,
     Instruction,
     PrimaryInstruction,
+    ProfessionalGroup,
     company_s,
     save_c,
 )

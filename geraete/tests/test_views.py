@@ -1,9 +1,8 @@
-from django.contrib.auth.models import User
-from django.test import TestCase, Client
+from django.contrib.auth.models import User, UserManager
+from django.test import Client, TestCase
 from django.urls import reverse
-from django.contrib.auth.models import UserManager
 
-from geraete.models import Company, DeviceCat, Device, Employee, SiteUser
+from geraete.models import Company, Device, DeviceCat, Employee, SiteUser
 
 
 class Setup(TestCase):

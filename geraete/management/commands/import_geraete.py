@@ -1,7 +1,9 @@
 import argparse
-from collections import namedtuple
-from django.core.management.base import BaseCommand, CommandError
 import csv
+from collections import namedtuple
+
+from django.core.management.base import BaseCommand, CommandError
+
 from geraete import models
 
 

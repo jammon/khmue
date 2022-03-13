@@ -1,14 +1,14 @@
 from django.contrib import admin
 
 from geraete.models import (
-    DeviceCat,
+    Company,
     Device,
-    ProfessionalGroup,
+    DeviceCat,
     Employee,
     Instruction,
     PrimaryInstruction,
+    ProfessionalGroup,
     SiteUser,
-    Company,
 )
 
 admin.site.register(DeviceCat)
