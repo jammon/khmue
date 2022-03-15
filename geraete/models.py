@@ -131,6 +131,8 @@ class Employee(models.Model):
         ordering = ["last_name", "first_name"]
 
     def __str__(self):
+        if self.title:
+            return f"{self.title} {self.first_name} {self.last_name}"
         return f"{self.first_name} {self.last_name}"
 
     def sort_key(self):

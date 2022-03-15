@@ -1,6 +1,9 @@
-from .base import *  # noqa: F403
-import os
 import configparser
+import os
+import string
+from random import choice
+
+from .base import *  # noqa: F403
 
 DEBUG = False
 
@@ -23,7 +26,9 @@ STATICFILES_STORAGE = (
 
 
 def random_string(length=50):
-    return "".join([choice(string.printable) for i in range(50)])
+    return "".join(
+        [choice(string.ascii_letters + string.digits) for i in range(50)]
+    )
 
 
 config = configparser.ConfigParser()
