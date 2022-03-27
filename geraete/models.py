@@ -1,8 +1,10 @@
 from datetime import date
 
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
 from django.http import Http404
+from docx import Document
 
 # Create your models here.
 
@@ -267,3 +269,54 @@ def save_c(form, company_id):
         model.id = form.instance.id
     model.save()
     return model
+
+
+def make_cert(employee):
+    """Return a Certification on the instructions for one employee
+
+    Uses 'data/Geraetepass-{company_id}.docx' as template
+    Can raise an OSError
+    """
+    instructions = (
+        Instruction.objects.filter(instructed=employee)
+        .prefetch_related("devices")
+        .select_related("instructor")
+    )
+    devices = sorted(
+        [
+            (dev.vendor, dev.name, instr.day, str(instr.instructor))
+            for instr in instructions
+            for dev in instr.devices.all()
+        ]
+    )
+
+    FILENAME = f"Geraetepass-{employee.company_id}.docx"
+    TEMPLATE_PATH = settings.BASE_DIR / "data" / FILENAME
+    try:
+        with open(TEMPLATE_PATH, "rb") as f:
+            doc = Document(f)
+    except OSError:
+        # The caller has to catch
+        raise
+
+    # write name and date
+    for p in doc.paragraphs:
+        if "Geräteeinweisungen für" in p.text:
+            p.runs[-1].add_text(str(employee))
+        elif "Hann. Münden, den" in p.text:
+            p.runs[-1].add_text(date.today().strftime("%d.%m.%Y"))
+    # write instructions
+    t = doc.tables[0]
+    for vendor, name, day, instructor in devices:
+        row = t.add_row()
+        row.cells[0].text = day.strftime("%d.%m.%Y")
+        row.cells[1].text = instructor
+        row.cells[2].text = f"{vendor}: {name}"
+    if not devices:
+        row = t.add_row()
+        row.cells[2].text = f"Noch keine Einweisungen"
+
+    filepath = settings.BASE_DIR / "data" / f"Geraetepass {employee}.docx"
+    doc.save(filepath)
+
+    return filepath

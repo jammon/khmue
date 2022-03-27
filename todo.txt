@@ -1,4 +1,5 @@
-(A) Abfrage für fehlende Einweisungen
 (B) Report für Einweisungen pro Person
 (B) Report für Einweisungen pro Gerät
 (B) Report für Gerätepass
+Checken, ob company_id immer beachtet wird
+Fehlermeldungen bei Login-Seite

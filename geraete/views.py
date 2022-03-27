@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
+from django.http import FileResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.text import slugify
 from django.views.decorators.http import require_POST
@@ -13,6 +14,7 @@ from geraete.models import (
     ProfessionalGroup,
     company_s,
     save_c,
+    make_cert,
 )
 
 
@@ -307,3 +309,28 @@ def lacking_instructions(request, employee_id=None, profgroup_id=None):
         for emp in employees.values()
     ]
     return render(request, "geraete/lacking_instructions.html", {"data": data})
+
+
+def error_page(request, msg):
+    return render(request, "geraete/error.html", {"msg": msg})
+
+
+def get_cert(request, employee_id):
+    """Return a Certification on the instructions for one employee
+
+    Uses 'data/Geraetepass-{company_id}.docx' as template
+    """
+    try:
+        employee = company_s(request, Employee, id=employee_id)[0]
+    except IndexError:
+        raise Http404
+    try:
+        filepath = make_cert(employee)
+    except OSError:
+        return error_page(request, "Fehler beim Erstellen der Datei")
+
+    return FileResponse(
+        open(filepath, "rb"),
+        as_attachment=True,
+        content_type="application/msword",
+    )

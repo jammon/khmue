@@ -37,6 +37,7 @@ urlpatterns = [
     ),
     path("get_devices", g_views.get_devices, name="get_devices"),
     path("lacking", g_views.lacking_instructions, name="lacking"),
+    path("pass/<int:employee_id>", g_views.get_cert, name="get_cert"),
 ]
 
 if settings.DEBUG:

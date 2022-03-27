@@ -1,3 +1,5 @@
 x 2022-02-01 Form für Berufgruppen fixen
 x 2022-02-01 login_required verwenden
 x 2022-03-07 Personen könne mehreren Berufsgruppen angehören
+x 2022-03-18 Abfrage für fehlende Einweisungen
+x 2022-03-21 Richtige Domain einrichten

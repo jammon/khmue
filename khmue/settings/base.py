@@ -30,7 +30,6 @@ ROOT_URLCONF = "khmue.urls"
 # factored out, so that it can be changed in uberspace.py
 DJANGO_TEMPLATES = {
     "BACKEND": "django.template.backends.django.DjangoTemplates",
-    "APP_DIRS": True,
     "OPTIONS": {
         "context_processors": [
             "django.contrib.auth.context_processors.auth",

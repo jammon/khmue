@@ -22,6 +22,7 @@ MIDDLEWARE = [
 ] + MIDDLEWARE
 INTERNAL_IPS = ("127.0.0.1", "localhost")
 
+DJANGO_TEMPLATES["APP_DIRS"] = True
 
 LOGGING = {
     "version": 1,

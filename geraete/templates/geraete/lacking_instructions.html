@@ -1,16 +1,26 @@
 {% extends "geraete/base.html" %}
 {% block content %}
+<h2>Fehlende Einweisungen</h2>
+<table>
 {% for employee, devices in data %}
-  <div class="employee">{{ employee }} ({{ devices|length }})
-    <div>
-      <ul>
-        {% for device in devices %}
-          <li>{{ device }}</li>
-        {% endfor %}
-      </ul>
-    </div>
-  </div>
+  <tr>
+    <td>
+      <div class="employee">{{ employee }} ({{ devices|length }})
+        <div>
+          <ul>
+            {% for device in devices %}
+              <li>{{ device }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </td>
+    <td>
+      <a href="/pass/{{ employee.id }}">Gerätepass</a>
+    </td>
+  </tr>
 {% endfor %}  
+</table>
 
 {% endblock content %}
 {% block extrascripts %}
