@@ -282,13 +282,25 @@ def make_cert(employee):
         .prefetch_related("devices")
         .select_related("instructor")
     )
-    devices = sorted(
-        [
-            (dev.vendor, dev.name, instr.day, str(instr.instructor))
-            for instr in instructions
-            for dev in instr.devices.all()
-        ]
-    )
+    primary_instructions = PrimaryInstruction.objects.filter(
+        instructed=employee
+    ).prefetch_related("devices")
+    dev1 = [
+        (dev.vendor, dev.name, instr.day, str(instr.instructor))
+        for instr in instructions
+        for dev in instr.devices.all()
+    ]
+    dev2 = [
+        (
+            dev.vendor,
+            dev.name,
+            p_instr.day,
+            f"{p_instr.instructor}, {p_instr.device_company}",
+        )
+        for p_instr in primary_instructions
+        for dev in p_instr.devices.all()
+    ]
+    devices = sorted(dev1 + dev2)
 
     FILENAME = f"Geraetepass-{employee.company_id}.docx"
     TEMPLATE_PATH = settings.BASE_DIR / "data" / FILENAME
@@ -306,15 +318,22 @@ def make_cert(employee):
         elif "Hann. Münden, den" in p.text:
             p.runs[-1].add_text(date.today().strftime("%d.%m.%Y"))
     # write instructions
-    t = doc.tables[0]
-    for vendor, name, day, instructor in devices:
-        row = t.add_row()
-        row.cells[0].text = day.strftime("%d.%m.%Y")
-        row.cells[1].text = instructor
-        row.cells[2].text = f"{vendor}: {name}"
-    if not devices:
-        row = t.add_row()
-        row.cells[2].text = f"Noch keine Einweisungen"
+    for t in doc.tables:
+        first_row = t.rows[0]
+        if tuple(c.text.strip() for c in first_row.cells) == (
+            "Datum",
+            "Einweiser",
+            "Geräte",
+        ):
+            for vendor, name, day, instructor in devices:
+                row = t.add_row()
+                row.cells[0].text = day.strftime("%d.%m.%Y")
+                row.cells[1].text = instructor
+                row.cells[2].text = f"{vendor}: {name}"
+            if not devices:
+                row = t.add_row()
+                row.cells[2].text = f"Noch keine Einweisungen"
+            break
 
     filepath = settings.BASE_DIR / "data" / f"Geraetepass {employee}.docx"
     doc.save(filepath)
