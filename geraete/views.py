@@ -297,13 +297,14 @@ def lacking_instructions(request, employee_id=None, profgroup_id=None):
         for emp in pg.employees.all():
             employees[emp.id] = emp
             to_instruct[emp.id] = set(pg_devs)
-    for instr in Instruction.objects.all().prefetch_related(
-        "instructed", "devices"
-    ):
-        devices = set(instr.devices.all())
-        for emp in instr.instructed.all():
-            if emp.id in to_instruct:
-                to_instruct[emp.id] -= devices
+    for Instr in (Instruction, PrimaryInstruction):
+        for instr in Instr.objects.all().prefetch_related(
+            "instructed", "devices"
+        ):
+            devices = set(instr.devices.all())
+            for emp in instr.instructed.all():
+                if emp.id in to_instruct:
+                    to_instruct[emp.id] -= devices
     data = [
         (emp, sorted(to_instruct[emp.id], key=lambda x: str(x)))
         for emp in employees.values()
